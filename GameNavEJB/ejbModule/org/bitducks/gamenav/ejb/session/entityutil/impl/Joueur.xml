@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="1.0" xmlns="http://java.sun.com/xml/ns/persistence/orm" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd "
+>
+    <named-query name="Joueur.getJoueur">
+        <query>
+			SELECT 
+				j,
+				u
+			FROM 
+				Joueur j 
+					JOIN j.joueurUnivers ju
+						JOIN ju.univers u
+			WHERE 
+				u.id = :universId AND 
+				j.login = :login AND 
+				j.password = :password; 
+        </query>
+<!--         <hint name="eclipselink.join-fetch" value="j.joueurUnivers.univers"/> -->
+    </named-query>
+</entity-mappings>
