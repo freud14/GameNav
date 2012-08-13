@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
 	id="WebApp_ID" version="3.0">
 	<display-name>GameNavWeb</display-name>
-	
+
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
@@ -14,10 +14,14 @@
 		<welcome-file>default.jsp</welcome-file>
 	</welcome-file-list>
 
+	<listener>
+		<listener-class>org.apache.tiles.extras.complete.CompleteAutoloadTilesListener</listener-class>
+	</listener>
+
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>All Access</web-resource-name>
-<!-- 			<url-pattern>/inscription</url-pattern> -->
+			<!-- <url-pattern>/inscription</url-pattern> -->
 			<url-pattern>/js/*</url-pattern>
 			<url-pattern>/img/*</url-pattern>
 			<url-pattern>/css/*</url-pattern>

@@ -38,8 +38,9 @@ public class InscriptionServlet extends HttpServlet {
 		this.inscriptionService.test();
 
 		request.setAttribute("univers", this.universService.getAllUnivers());
-		this.getServletContext().getRequestDispatcher("/inscription.jsp")
-				.forward(request, response);
+		// this.getServletContext().getRequestDispatcher("/inscription.jsp")
+		// .forward(request, response);
+		TilesUtil.render("inscription", request, response);
 	}
 
 	/**
