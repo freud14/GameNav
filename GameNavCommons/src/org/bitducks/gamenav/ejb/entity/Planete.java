@@ -3,6 +3,7 @@ package org.bitducks.gamenav.ejb.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.List;
 
 /**
@@ -20,17 +21,20 @@ public class Planete implements Serializable {
 	@Column(name = "ID")
 	private int								id;
 
+	@Column(name = "NOM")
+	private String							nom;
+
 	@Column(name = "EMPLACEMENT")
 	private int								emplacement;
+
+	@Column(name = "SYSTEME_SOLAIRE")
+	private int								systemeSolaire;
 
 	@Column(name = "GALAXIE")
 	private int								galaxie;
 
-	@Column(name = "NOM")
-	private String							nom;
-
-	@Column(name = "SYSTEME_SOLAIRE")
-	private int								systemeSolaire;
+	@Column(name = "PLANETE_MERE")
+	private boolean							planeteMere;
 
 	// bi-directional many-to-one association to ConstructionTechnologie
 	@OneToMany(mappedBy = "planete")
@@ -80,6 +84,16 @@ public class Planete implements Serializable {
 		this.id = id;
 	}
 
+	public String getNom() {
+
+		return this.nom;
+	}
+
+	public void setNom(String nom) {
+
+		this.nom = nom;
+	}
+
 	public int getEmplacement() {
 
 		return this.emplacement;
@@ -88,6 +102,16 @@ public class Planete implements Serializable {
 	public void setEmplacement(int emplacement) {
 
 		this.emplacement = emplacement;
+	}
+
+	public int getSystemeSolaire() {
+
+		return this.systemeSolaire;
+	}
+
+	public void setSystemeSolaire(int systemeSolaire) {
+
+		this.systemeSolaire = systemeSolaire;
 	}
 
 	public int getGalaxie() {
@@ -100,24 +124,14 @@ public class Planete implements Serializable {
 		this.galaxie = galaxie;
 	}
 
-	public String getNom() {
+	public boolean isPlaneteMere() {
 
-		return this.nom;
+		return this.planeteMere;
 	}
 
-	public void setNom(String nom) {
+	public void setPlaneteMere(boolean planeteMere) {
 
-		this.nom = nom;
-	}
-
-	public int getSystemeSolaire() {
-
-		return this.systemeSolaire;
-	}
-
-	public void setSystemeSolaire(int systemeSolaire) {
-
-		this.systemeSolaire = systemeSolaire;
+		this.planeteMere = planeteMere;
 	}
 
 	public List<ConstructionTechnologie> getConstructionTechnologie() {

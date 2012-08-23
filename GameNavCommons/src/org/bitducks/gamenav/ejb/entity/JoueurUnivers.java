@@ -3,6 +3,7 @@ package org.bitducks.gamenav.ejb.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.List;
 
 /**
@@ -26,13 +27,19 @@ public class JoueurUnivers implements Serializable {
 
 	// bi-directional many-to-one association to Joueur
 	@ManyToOne
-	@JoinColumn(name = "JOUEUR_ID")
+	@JoinColumn(name = "JOUEUR_ID", insertable = false, updatable = false)
 	private Joueur						joueur;
 
 	// bi-directional many-to-one association to Univers
 	@ManyToOne
-	@JoinColumn(name = "UNIVERS_ID")
+	@JoinColumn(name = "UNIVERS_ID", insertable = false, updatable = false)
 	private Univers						univers;
+
+	@Column(name = "JOUEUR_ID")
+	private int							joueurId;
+
+	@Column(name = "UNIVERS_ID")
+	private int							universId;
 
 	// bi-directional many-to-one association to Planete
 	@OneToMany(mappedBy = "joueurUnivers")
@@ -72,19 +79,29 @@ public class JoueurUnivers implements Serializable {
 		return this.joueur;
 	}
 
-	public void setJoueur(Joueur joueur) {
-
-		this.joueur = joueur;
-	}
-
 	public Univers getUnivers() {
 
 		return this.univers;
 	}
 
-	public void setUnivers(Univers univers) {
+	public int getJoueurId() {
 
-		this.univers = univers;
+		return this.joueurId;
+	}
+
+	public void setJoueurId(int joueurId) {
+
+		this.joueurId = joueurId;
+	}
+
+	public int getUniversId() {
+
+		return this.universId;
+	}
+
+	public void setUniversId(int universId) {
+
+		this.universId = universId;
 	}
 
 	public List<Planete> getPlanete() {

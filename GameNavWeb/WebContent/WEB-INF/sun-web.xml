@@ -4,13 +4,18 @@
 	<context-root>/gamenav</context-root>
 
 	<security-role-mapping>
-		<role-name>Regular-Group</role-name>
-		<group-name>Regular-Group </group-name>
+		<role-name>JOUEUR</role-name>
+		<group-name>JOUEUR</group-name>
 	</security-role-mapping>
 
 	<security-role-mapping>
-		<role-name> Admin-Group</role-name>
-		<group-name>Admin-Group </group-name>
+		<role-name>MODERATEUR</role-name>
+		<group-name>MODERATEUR</group-name>
+	</security-role-mapping>
+
+	<security-role-mapping>
+		<role-name>ADMINISTRATEUR</role-name>
+		<group-name>ADMINISTRATEUR</group-name>
 	</security-role-mapping>
 
 	<class-loader delegate="true" />

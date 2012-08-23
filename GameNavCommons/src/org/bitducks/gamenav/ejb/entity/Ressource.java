@@ -30,7 +30,7 @@ public class Ressource implements Serializable {
 	private int						ordre;
 
 	@Column(name = "PERISSABLE")
-	private byte					perissable;
+	private boolean					perissable;
 
 	@Column(name = "PRODUCTION_BASE")
 	private int						productionBase;
@@ -95,12 +95,12 @@ public class Ressource implements Serializable {
 		this.ordre = ordre;
 	}
 
-	public byte getPerissable() {
+	public boolean isPerissable() {
 
 		return this.perissable;
 	}
 
-	public void setPerissable(byte perissable) {
+	public void setPerissable(boolean perissable) {
 
 		this.perissable = perissable;
 	}

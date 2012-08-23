@@ -1,12 +1,11 @@
-package org.bitducks.gamenav.ejb.session.entityutil;
+
+package org.bitducks.gamenav.entityutil;
 
 import java.util.List;
 
-import javax.ejb.Remote;
-
 import org.bitducks.gamenav.ejb.entity.Univers;
 
-@Remote
 public interface UniversService {
+
 	List<Univers> getAllUnivers();
 }

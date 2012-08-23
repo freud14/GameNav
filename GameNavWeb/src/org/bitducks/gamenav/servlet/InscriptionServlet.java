@@ -2,6 +2,9 @@
 package org.bitducks.gamenav.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -10,9 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bitducks.gamenav.dtp.InscriptionDTP;
+import org.bitducks.gamenav.dto.InscriptionJoueurDTO;
+import org.bitducks.gamenav.dtp.InscriptionFormDTP;
+import org.bitducks.gamenav.dtp.InscriptionJoueurDTP;
 import org.bitducks.gamenav.ejb.session.InscriptionService;
-import org.bitducks.gamenav.ejb.session.entityutil.UniversService;
+import org.bitducks.gamenav.servlet.util.TilesUtil;
 
 /**
  * Servlet implementation class InscriptionServlet
@@ -21,9 +26,6 @@ import org.bitducks.gamenav.ejb.session.entityutil.UniversService;
 public class InscriptionServlet extends HttpServlet {
 
 	private static final long	serialVersionUID	= 1L;
-
-	@EJB
-	private UniversService		universService;
 
 	@EJB
 	private InscriptionService	inscriptionService;
@@ -35,11 +37,9 @@ public class InscriptionServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		this.inscriptionService.test();
-
-		request.setAttribute("univers", this.universService.getAllUnivers());
-		// this.getServletContext().getRequestDispatcher("/inscription.jsp")
-		// .forward(request, response);
+		request.setAttribute(
+				"univers",
+				this.inscriptionService.getInscriptionFormDTO(new InscriptionFormDTP()).universList);
 		TilesUtil.render("inscription", request, response);
 	}
 
@@ -50,36 +50,39 @@ public class InscriptionServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		String email = request.getParameter("joueur_email");
-		String login = request.getParameter("joueur_login");
-		String password = request.getParameter("joueur_password");
-		String univers = request.getParameter("joueur_univers");
-		String planete = request.getParameter("joueur_planete");
+		Map<String, String> param = getParameterMap(request.getParameterMap());
+		InscriptionJoueurDTP inscriptionDTP = getInscriptionDTP(param);
 
-		validateParameter(email, login, password, univers, planete);
-
-		InscriptionDTP dtp = new InscriptionDTP();
-		dtp.email = email;
-		dtp.login = login;
-		dtp.password = password;
-		dtp.idUnivers = Integer.parseInt(univers);
-		dtp.planete = planete;
-
-		this.inscriptionService.inscription(dtp);
+		InscriptionJoueurDTO dto = this.inscriptionService.inscriptionJoueur(inscriptionDTP);
+		response.getWriter().println(dto);
 	}
 
-	private static void validateParameter(String email, String login,
-			String password, String univers, String planete) {
+	private static InscriptionJoueurDTP getInscriptionDTP(
+			Map<String, String> parameterMap) {
 
-		if (login == null) {
+		InscriptionJoueurDTP dtp = new InscriptionJoueurDTP();
+
+		dtp.email = parameterMap.get("joueur_email");
+		dtp.login = parameterMap.get("joueur_login");
+		dtp.password = parameterMap.get("joueur_password");
+		String passwordConfirmation = parameterMap.get("joueur_password_confirmation");
+		String univers = parameterMap.get("joueur_univers");
+		dtp.nomPlanete = parameterMap.get("joueur_planete");
+
+		if (dtp.login == null) {
 			throw new RuntimeException("Le nom d'utilisateur est absent.");
 		}
 
-		if (password == null) {
+		if (dtp.password == null) {
 			throw new RuntimeException("Le mot de passe est absent.");
 		}
 
-		if (email == null) {
+		if (!dtp.password.equals(passwordConfirmation)) {
+			throw new RuntimeException(
+					"Le mot de passe saisi et la confirmation du mot de passe ne concorde pas.");
+		}
+
+		if (dtp.email == null) {
 			throw new RuntimeException("L'adresse courriel est absente.");
 		}
 
@@ -88,14 +91,30 @@ public class InscriptionServlet extends HttpServlet {
 		}
 
 		try {
-			Integer.parseInt(univers);
+			dtp.idUnivers = Integer.parseInt(univers);
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("L'univers n'a pas le bon format.");
 		}
 
-		if (planete == null) {
+		if (dtp.nomPlanete == null) {
 			throw new RuntimeException("Le nom de la planète mère est absent.");
 		}
+
+		return dtp;
+	}
+
+	private static Map<String, String> getParameterMap(
+			Map<String, String[]> parameterMap) {
+
+		Map<String, String> ret = new HashMap<String, String>();
+
+		for (Entry<String, String[]> entry : parameterMap.entrySet()) {
+			if (entry.getValue() != null && entry.getValue().length > 0) {
+				ret.put(entry.getKey(), entry.getValue()[0]);
+			}
+		}
+
+		return ret;
 	}
 
 }

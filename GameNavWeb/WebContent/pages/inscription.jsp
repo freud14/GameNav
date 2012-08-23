@@ -1,8 +1,6 @@
-<%@page import="org.bitducks.gamenav.ejb.entity.Univers"%>
-<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!-- 				<div class="hero-unit"> -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <form class="form-horizontal" method="post">
 	<fieldset>
 		<legend>Inscription</legend>
@@ -33,6 +31,15 @@
 			</div>
 		</div>
 
+		<div class="control-group">
+			<label class="control-label" for="joueur_password_confirmation">Confirmation
+				du mot de passe</label>
+			<div class="controls">
+				<input type="password" class="input-xlarge" id="joueur_password_confirmation"
+					name="joueur_password_confirmation">
+			</div>
+		</div>
+
 		<hr />
 
 		<div class="control-group">
@@ -40,16 +47,9 @@
 			<div class="controls">
 				<select name="joueur_univers">
 					<option value=""></option>
-					<%
-						@SuppressWarnings("unchecked")
-						List<Univers> univers = (List<Univers>) request
-								.getAttribute("univers");
-						for (Univers u : univers) {
-					%>
-					<option value="<%=u.getId()%>"><%=u.getNom()%></option>
-					<%
-						}
-					%>
+					<c:forEach var="u" items="${univers}">
+						<option value="${u.id}">${u.nom}</option>
+					</c:forEach>
 				</select>
 			</div>
 		</div>

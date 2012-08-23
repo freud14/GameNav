@@ -1,39 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-	<persistence-unit name="GameNavJPA">
-		<class>org.bitducks.gamenav.ejb.entity.Batiment</class>
-		<class>org.bitducks.gamenav.ejb.entity.ConstructionTechnologie</class>
-		<class>org.bitducks.gamenav.ejb.entity.CoutEnergie</class>
-		<class>org.bitducks.gamenav.ejb.entity.CoutRessource</class>
-		<class>org.bitducks.gamenav.ejb.entity.CoutRessourcePK</class>
-		<class>org.bitducks.gamenav.ejb.entity.Defense</class>
-		<class>org.bitducks.gamenav.ejb.entity.GrpeVaisseauJoueur</class>
-		<class>org.bitducks.gamenav.ejb.entity.Joueur</class>
-		<class>org.bitducks.gamenav.ejb.entity.JoueurUnivers</class>
-		<class>org.bitducks.gamenav.ejb.entity.Planete</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteBatiment</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteBatimentPK</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteDefense</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteDefensePK</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteRessource</class>
-		<class>org.bitducks.gamenav.ejb.entity.PlaneteRessourcePK</class>
-		<class>org.bitducks.gamenav.ejb.entity.Recherche</class>
-		<class>org.bitducks.gamenav.ejb.entity.RechercheJoueur</class>
-		<class>org.bitducks.gamenav.ejb.entity.RechercheJoueurPK</class>
-		<class>org.bitducks.gamenav.ejb.entity.Ressource</class>
-		<class>org.bitducks.gamenav.ejb.entity.Technologie</class>
-		<class>org.bitducks.gamenav.ejb.entity.TechnoFeuCoqueBouclier</class>
-		<class>org.bitducks.gamenav.ejb.entity.TechnoFeuCoqueBouclierPK</class>
-		<class>org.bitducks.gamenav.ejb.entity.TechnoRessource</class>
-		<class>org.bitducks.gamenav.ejb.entity.TechnoRessourcePK</class>
-		<class>org.bitducks.gamenav.ejb.entity.Trajet</class>
-		<class>org.bitducks.gamenav.ejb.entity.TrajetRessource</class>
-		<class>org.bitducks.gamenav.ejb.entity.TrajetRessourcePK</class>
-		<class>org.bitducks.gamenav.ejb.entity.TypeTechnologie</class>
-		<class>org.bitducks.gamenav.ejb.entity.TypeTrajet</class>
-		<class>org.bitducks.gamenav.ejb.entity.Univers</class>
-		<class>org.bitducks.gamenav.ejb.entity.Vaisseau</class>
-		<class>org.bitducks.gamenav.ejb.entity.Prerequis</class>
-		<class>org.bitducks.gamenav.ejb.entity.PrerequisPK</class>
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
+    http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
+	<persistence-unit name="GameNavPU" transaction-type="JTA">
+		<jta-data-source>jdbc/GameNav</jta-data-source>
+		<mapping-file>org/bitducks/gamenav/entityutil/Joueur.xml</mapping-file>
+		<mapping-file>org/bitducks/gamenav/entityutil/Planete.xml</mapping-file>
+		<mapping-file>org/bitducks/gamenav/entityutil/Univers.xml</mapping-file>
+		<mapping-file>org/bitducks/gamenav/entityutil/Ressource.xml</mapping-file>
+		<jar-file>lib/GameNavCommons.jar</jar-file>
+		<properties>
+			<property name="eclipselink.weaving" value="false"/>
+		</properties>
 	</persistence-unit>
 </persistence>
