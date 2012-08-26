@@ -11,15 +11,15 @@
 		class="icon-user"></i> Username <span class="caret"></span>
 	</a>
 	<ul class="dropdown-menu">
-		<li><a href="#">Profile</a></li>
+		<li><a href="<c:url value="/inscription#"/>">Profile</a></li>
 		<li class="divider"></li>
-		<li><a href="#">Sign Out</a></li>
+		<li><a href="<c:url value="/inscription#"/>">Sign Out</a></li>
 	</ul>
 </div>
 <div class="nav-collapse">
 	<ul class="nav">
-		<li class="active"><a href="#">Home</a></li>
-		<li><a href="#about">About</a></li>
-		<li><a href="#contact">Contact</a></li>
+		<li class="active"><a href="<c:url value="/inscription#"/>">Home</a></li>
+		<li><a href="<c:url value="/inscription#about"/>">About</a></li>
+		<li><a href="<c:url value="/inscription#contact"/>">Contact</a></li>
 	</ul>
 </div>

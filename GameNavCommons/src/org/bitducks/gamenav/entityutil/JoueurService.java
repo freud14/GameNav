@@ -1,11 +1,11 @@
 
 package org.bitducks.gamenav.entityutil;
 
+import java.util.List;
+
 import org.bitducks.gamenav.ejb.entity.Joueur;
 
 public interface JoueurService {
 
-	void create(int universId, Joueur joueur);
-
-	Object[] getJoueur(int universId, String nomUtilisateur, String motDePasse);
+	List<Joueur> getUserByLoginOrEmail(String login, String email);
 }

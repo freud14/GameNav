@@ -7,17 +7,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.ejb.EJB;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bitducks.gamenav.dto.InscriptionJoueurDTO;
 import org.bitducks.gamenav.dtp.InscriptionFormDTP;
 import org.bitducks.gamenav.dtp.InscriptionJoueurDTP;
 import org.bitducks.gamenav.ejb.session.InscriptionService;
+import org.bitducks.gamenav.ejb.session.exception.InscriptionErrorCode;
+import org.bitducks.gamenav.ejb.session.exception.InscriptionException;
+import org.bitducks.gamenav.ejb.session.exception.base.GameNavError;
 import org.bitducks.gamenav.servlet.util.TilesUtil;
+import org.bitducks.gamenav.servlet.util.Util;
 
 /**
  * Servlet implementation class InscriptionServlet
@@ -27,6 +32,22 @@ public class InscriptionServlet extends HttpServlet {
 
 	private static final long	serialVersionUID	= 1L;
 
+	private static final String	PAGE				= "inscription";
+
+	private static final String	PAGE_CONFIRMATION	= "inscription_confirmation";
+
+	private static final String	LOGIN_FORM			= "login";
+
+	private static final String	EMAIL_FORM			= "email";
+
+	private static final String	PASSWORD_FORM		= "password";
+
+	private static final String	PASSWORD_CONF_FORM	= "password_confirmation";
+
+	private static final String	UNIVERS_FORM		= "univers";
+
+	private static final String	PLANETE_FORM		= "planete";
+
 	@EJB
 	private InscriptionService	inscriptionService;
 
@@ -34,70 +55,102 @@ public class InscriptionServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		request.setAttribute(
-				"univers",
-				this.inscriptionService.getInscriptionFormDTO(new InscriptionFormDTP()).universList);
-		TilesUtil.render("inscription", request, response);
+		this.renderInscriptionPage(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		Map<String, String> param = getParameterMap(request.getParameterMap());
-		InscriptionJoueurDTP inscriptionDTP = getInscriptionDTP(param);
+		try {
+			Map<String, String> param = InscriptionServlet.getParameterMap(request.getParameterMap());
+			InscriptionJoueurDTP inscriptionDTP = InscriptionServlet.getInscriptionDTP(param);
 
-		InscriptionJoueurDTO dto = this.inscriptionService.inscriptionJoueur(inscriptionDTP);
-		response.getWriter().println(dto);
+			this.inscriptionService.inscriptionJoueur(inscriptionDTP);
+			TilesUtil.render(InscriptionServlet.PAGE_CONFIRMATION, request,
+					response);
+		} catch (InscriptionException e) {
+			Util.manageException(e, request);
+			this.renderInscriptionPage(request, response);
+		}
+	}
+
+	public void renderInscriptionPage(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		request.setAttribute(
+				"univers",
+				this.inscriptionService.getInscriptionFormDTO(new InscriptionFormDTP()).universList);
+		TilesUtil.render(InscriptionServlet.PAGE, request, response);
 	}
 
 	private static InscriptionJoueurDTP getInscriptionDTP(
-			Map<String, String> parameterMap) {
+			Map<String, String> parameterMap) throws InscriptionException {
 
 		InscriptionJoueurDTP dtp = new InscriptionJoueurDTP();
+		InscriptionException ex = new InscriptionException();
 
-		dtp.email = parameterMap.get("joueur_email");
-		dtp.login = parameterMap.get("joueur_login");
-		dtp.password = parameterMap.get("joueur_password");
-		String passwordConfirmation = parameterMap.get("joueur_password_confirmation");
-		String univers = parameterMap.get("joueur_univers");
-		dtp.nomPlanete = parameterMap.get("joueur_planete");
+		dtp.email = parameterMap.get(InscriptionServlet.EMAIL_FORM);
+		dtp.login = parameterMap.get(InscriptionServlet.LOGIN_FORM);
+		dtp.password = parameterMap.get(InscriptionServlet.PASSWORD_FORM);
+		String passwordConfirmation = parameterMap.get(InscriptionServlet.PASSWORD_CONF_FORM);
+		String univers = parameterMap.get(InscriptionServlet.UNIVERS_FORM);
+		dtp.nomPlanete = parameterMap.get(InscriptionServlet.PLANETE_FORM);
 
-		if (dtp.login == null) {
-			throw new RuntimeException("Le nom d'utilisateur est absent.");
+		if (dtp.login == null || dtp.login.isEmpty()) {
+			ex.addError(new GameNavError(InscriptionErrorCode.LOGIN_ABSENT));
 		}
 
-		if (dtp.password == null) {
-			throw new RuntimeException("Le mot de passe est absent.");
+		if (dtp.password == null || dtp.password.isEmpty()) {
+			ex.addError(new GameNavError(InscriptionErrorCode.PASSWORD_ABSENT));
+		} else if (passwordConfirmation == null
+				|| passwordConfirmation.isEmpty()) {
+			ex.addError(new GameNavError(
+					InscriptionErrorCode.PASSWORD_CONFIRMATION_ABSENT));
+		} else if (!dtp.password.equals(passwordConfirmation)) {
+			ex.addError(new GameNavError(
+					InscriptionErrorCode.PASSWORD_CONFIRMATION_CONCORDANCE));
 		}
 
-		if (!dtp.password.equals(passwordConfirmation)) {
-			throw new RuntimeException(
-					"Le mot de passe saisi et la confirmation du mot de passe ne concorde pas.");
+		if (dtp.email == null || dtp.email.isEmpty()) {
+			ex.addError(new GameNavError(InscriptionErrorCode.EMAIL_ABSENT));
+		} else {
+			try {
+				InternetAddress emailAddr = new InternetAddress(dtp.email);
+				emailAddr.validate();
+				if (dtp.email.split("@")[1].split("[.]").length <= 1) {
+					throw new AddressException();
+				}
+			} catch (AddressException ex2) {
+				ex.addError(new GameNavError(InscriptionErrorCode.EMAIL_FORMAT));
+			}
 		}
 
-		if (dtp.email == null) {
-			throw new RuntimeException("L'adresse courriel est absente.");
+		if (univers == null || univers.isEmpty()) {
+			ex.addError(new GameNavError(InscriptionErrorCode.UNIVERS_ABSENT));
+		} else {
+			try {
+				dtp.idUnivers = Integer.parseInt(univers);
+			} catch (NumberFormatException e) {
+				ex.addError(new GameNavError(
+						InscriptionErrorCode.UNIVERS_FORMAT));
+			}
 		}
 
-		if (univers == null) {
-			throw new RuntimeException("L'univers est absent.");
+		if (dtp.nomPlanete == null || dtp.nomPlanete.isEmpty()) {
+			ex.addError(new GameNavError(InscriptionErrorCode.PLANETE_ABSENT));
 		}
 
-		try {
-			dtp.idUnivers = Integer.parseInt(univers);
-		} catch (NumberFormatException e) {
-			throw new RuntimeException("L'univers n'a pas le bon format.");
-		}
-
-		if (dtp.nomPlanete == null) {
-			throw new RuntimeException("Le nom de la planète mère est absent.");
+		if (ex.getErrors().size() != 0) {
+			throw ex;
 		}
 
 		return dtp;

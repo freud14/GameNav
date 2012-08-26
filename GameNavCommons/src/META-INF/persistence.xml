@@ -5,7 +5,9 @@
     http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
 	<persistence-unit name="GameNavPU" transaction-type="JTA">
 		<jta-data-source>jdbc/GameNav</jta-data-source>
+		<mapping-file>org/bitducks/gamenav/entityutil/JoueurDroit.xml</mapping-file>
 		<mapping-file>org/bitducks/gamenav/entityutil/Joueur.xml</mapping-file>
+		<mapping-file>org/bitducks/gamenav/entityutil/JoueurUnivers.xml</mapping-file>
 		<mapping-file>org/bitducks/gamenav/entityutil/Planete.xml</mapping-file>
 		<mapping-file>org/bitducks/gamenav/entityutil/Univers.xml</mapping-file>
 		<mapping-file>org/bitducks/gamenav/entityutil/Ressource.xml</mapping-file>

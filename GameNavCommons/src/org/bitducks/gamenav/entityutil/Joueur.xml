@@ -3,19 +3,15 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd "
 >
-    <named-query name="Joueur.getJoueur">
+    <named-query name="Joueur.getUserByLoginOrEmail">
         <query>
 			SELECT 
-				j,
-				u
+				j
 			FROM 
 				Joueur j 
-					JOIN j.joueurUnivers ju
-						JOIN ju.univers u
 			WHERE 
-				u.id = :universId AND 
-				j.login = :login AND 
-				j.password = :password; 
+				j.login = ?1 OR 
+				j.email = ?2; 
         </query>
 <!--         <hint name="eclipselink.join-fetch" value="j.joueurUnivers.univers"/> -->
     </named-query>

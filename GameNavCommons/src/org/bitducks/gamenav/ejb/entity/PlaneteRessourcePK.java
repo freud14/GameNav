@@ -14,14 +14,19 @@ public class PlaneteRessourcePK implements Serializable {
 	// default serial version id, required for serializable classes.
 	private static final long	serialVersionUID	= 1L;
 
-	@Column(name = "RESSOURCE_ID", insertable = false, updatable = false)
+	@Column(name = "RESSOURCE_ID")
 	private int					ressourceId;
 
-	@Column(name = "PLANETE_ID", insertable = false, updatable = false)
+	@Column(name = "PLANETE_ID")
 	private int					planeteId;
 
 	public PlaneteRessourcePK() {
 
+	}
+	
+	public PlaneteRessourcePK(int ressourceId, int planeteId) {
+		this.ressourceId = ressourceId;
+		this.planeteId = planeteId;
 	}
 
 	public int getRessourceId() {

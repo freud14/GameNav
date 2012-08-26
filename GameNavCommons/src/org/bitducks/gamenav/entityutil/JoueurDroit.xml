@@ -3,15 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd "
 >
-    <named-query name="Planete.getPlanetesInGalaxieAndSystemeSolaire">
+    <named-query name="JoueurDroit.getJoueurDroitsByLogin">
         <query>
 			SELECT 
-				p
+				jd
 			FROM 
-				Planete p
+				JoueurDroit jd 
 			WHERE 
-				p.galaxie = ?1 AND
-				p.systemeSolaire = ?2 
+				jd.id.login = ?1
         </query>
     </named-query>
 </entity-mappings>

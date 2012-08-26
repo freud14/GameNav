@@ -12,30 +12,40 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.bitducks.gamenav.entityutil.JoueurDroitService;
+import org.bitducks.gamenav.entityutil.JoueurService;
+import org.bitducks.gamenav.entityutil.JoueurUniversService;
 import org.bitducks.gamenav.entityutil.PlaneteService;
 import org.bitducks.gamenav.entityutil.RessourceService;
 import org.bitducks.gamenav.entityutil.UniversService;
-import org.bitducks.gamenav.entityutil.JoueurService;
 
 public abstract class GameNavBaseServiceBean {
 
 	@PersistenceContext(unitName = "GameNavPU")
-	protected EntityManager		em;
+	protected EntityManager			em;
 
 	@Resource
-	private EJBContext			ctx;
+	private EJBContext				ctx;
 
-	protected JoueurService		joueurService;
+	protected JoueurDroitService	joueurDroitService;
 
-	protected PlaneteService	planeteService;
+	protected JoueurService			joueurService;
 
-	protected RessourceService	ressourceService;
+	protected JoueurUniversService	joueurUniversService;
 
-	protected UniversService	universService;
+	protected PlaneteService		planeteService;
+
+	protected RessourceService		ressourceService;
+
+	protected UniversService		universService;
 
 	public GameNavBaseServiceBean() {
 
+		this.joueurDroitService = this.getService("JoueurDroit",
+				JoueurDroitService.class);
 		this.joueurService = this.getService("Joueur", JoueurService.class);
+		this.joueurUniversService = this.getService("JoueurUnivers",
+				JoueurUniversService.class);
 		this.planeteService = this.getService("Planete", PlaneteService.class);
 		this.ressourceService = this.getService("Ressource",
 				RessourceService.class);
@@ -60,7 +70,7 @@ public abstract class GameNavBaseServiceBean {
 								+ "." + method.getName());
 
 						if (args != null) {
-							int i = 0;
+							int i = 1;
 							for (Object arg : args) {
 								query.setParameter(i, arg);
 								++i;

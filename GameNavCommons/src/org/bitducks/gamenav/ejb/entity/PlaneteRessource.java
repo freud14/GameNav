@@ -27,12 +27,12 @@ public class PlaneteRessource implements Serializable {
 
 	// bi-directional many-to-one association to Planete
 	@ManyToOne
-	@JoinColumn(name = "PLANETE_ID")
+	@JoinColumn(name = "PLANETE_ID", insertable = false, updatable = false)
 	private Planete				planete;
 
 	// bi-directional many-to-one association to Ressource
 	@ManyToOne
-	@JoinColumn(name = "RESSOURCE_ID")
+	@JoinColumn(name = "RESSOURCE_ID", insertable = false, updatable = false)
 	private Ressource			ressource;
 
 	public PlaneteRessource() {
