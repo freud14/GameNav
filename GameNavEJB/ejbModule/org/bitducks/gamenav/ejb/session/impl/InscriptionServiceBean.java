@@ -209,7 +209,7 @@ public class InscriptionServiceBean extends GameNavBaseServiceBean implements
 		}
 
 		throw new InscriptionException(new GameNavError(
-				"inscription.univers.plein"));
+				InscriptionErrorCode.UNIVERS_PLEIN));
 	}
 
 	@Override
